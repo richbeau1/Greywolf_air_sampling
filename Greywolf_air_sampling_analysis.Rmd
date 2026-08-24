@@ -177,6 +177,33 @@ school1_summary
 
 
 
+``` {r school1-scatter}
+
+# Examines the minute-by-minute relationship between outdoor and indoor PM2.5
+# at School 1. Each sampling day is shown separately.
+# Note: x-axis scales differ between sampling days.
+
+school1_scatter <- paired_pm25 |>
+  filter(school == "School 1") |>
+  mutate(sample_date = format(as.Date(date), "%d %B %Y"))
+
+scatterPlot(
+  school1_scatter,
+  x = "outdoor",
+  y = "indoor",
+  type = "sample_date",
+  linear = TRUE,
+  smooth = TRUE,
+  scales = "free_x",
+  xlab = expression(Outdoor~PM[2.5]~(mu*g/m^3)),
+  ylab = expression(Indoor~PM[2.5]~(mu*g/m^3)),
+  title = "School 1 — indoor vs outdoor PM2.5\nNote: x-axis scales differ between sampling days"
+)
+
+```
+
+
+
 ```{r school2-three-days}
 
 school2_pm25 <- paired_pm25 |>
@@ -244,4 +271,27 @@ daily_relationship
 
 ```
 
+```{r school2-scatter}
 
+# Examines the minute-by-minute relationship between outdoor and indoor PM2.5
+# at School 2. Each sampling day is shown separately.
+# Note: x-axis scales differ between sampling days.
+
+school2_scatter <- paired_pm25 |>
+  filter(school == "School 2") |>
+  mutate(sample_date = format(as.Date(date), "%d %B %Y"))
+
+scatterPlot(
+  school2_scatter,
+  x = "outdoor",
+  y = "indoor",
+  type = "sample_date",
+  linear = TRUE,
+  smooth = TRUE,
+  scales = "free_x",
+  xlab = expression(Outdoor~PM[2.5]~(mu*g/m^3)),
+  ylab = expression(Indoor~PM[2.5]~(mu*g/m^3)),
+  title = "School 2 — indoor vs outdoor PM2.5\nNote: x-axis scales differ between sampling days"
+)
+
+```
