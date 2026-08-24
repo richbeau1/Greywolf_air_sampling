@@ -48,7 +48,7 @@ Current processing includes:
 7. Indoor–outdoor correlation and linear regression.
 8. Time-series visualisation using `openair`.
 
-## Project structure
+## Project structure 
 
 - `Greywolf_air_sampling_analysis.Rmd` — main analysis
 - `Greywolf_air_sampling.Rproj` — RStudio project
