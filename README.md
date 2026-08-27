@@ -1,77 +1,131 @@
-# Greywolf Air Sampling
+# GreyWolf Air Sampling
 
 ## Project description
 
-Analysis of paired indoor and outdoor PM2.5 measurements collected using GreyWolf particle monitors as part of PhD research at the University of Sheffield.
+Analysis of paired indoor and outdoor PM₂.₅ measurements collected using GreyWolf particle monitors 
+at two primary schools in Sheffield as part of PhD research at the University of Sheffield.
 
-The sampling investigates short-term relationships between indoor and outdoor PM2.5 concentrations in UK school environments.
+The analysis examines short-term indoor–outdoor PM₂.₅ relationships, attenuation of outdoor PM₂.₅ 
+indoors, indoor particle events, and the influence of ambient PM₂.₅ and meteorological conditions.
 
-## Data collection
+## Study sites
 
-Paired GreyWolf instruments were operated indoors and outdoors during occupied school days.
+Two primary schools in Sheffield participated in the study. School identities are anonymised 
+throughout the repository and analysis.
 
-Measurements were recorded at one-minute intervals.
+- **School 1** — sampled 6–8 July 2026
+- **School 2** — sampled 13–15 July 2026
 
-The current dataset contains:
+## GreyWolf measurements
 
-- School 1: 6–8 July 2026
-- School 2: 13–15 July 2026
+Paired indoor and outdoor GreyWolf measurements were collected at approximately one-minute 
+resolution during each sampling period.
 
-## Data
+The analysis uses the GreyWolf PM₂.₅ mass concentration measurement.
 
-Raw GreyWolf exports are stored locally in:
+Raw monitoring data are stored locally under:
 
-`data/raw/Greywolf_Data/`
+`data/raw/`
 
-Only the particulate-mass files are currently used for PM2.5 analysis.
+Raw data are excluded from Git and are not included in the repository.
 
-The PM2.5 variable is the GreyWolf `2.5µm µg/m3` measurement.
+## External ambient PM₂.₅
 
-Raw data are excluded from Git and are not stored in this repository.
+Hourly ambient PM₂.₅ observations are obtained from the DEFRA Automatic Urban and Rural 
+Network (AURN) Sheffield Devonshire Green urban-background monitoring station.
 
-## Data processing
+These observations provide an independent measure of wider ambient PM₂.₅ conditions 
+during the school sampling periods.
 
-`Greywolf_air_sampling_analysis.Rmd` contains the main workflow.
+## Meteorology
 
-Current processing includes:
+Hourly meteorological observations are obtained from the Sheffield Airviro Athletic Stadium meteorological station.
 
-1. Identification of indoor and outdoor particulate-mass files.
-2. Extraction of PM2.5 concentrations.
-3. Conversion of timestamps to R date-time format.
-4. Matching indoor and outdoor observations by school and minute.
-5. Calculation of:
-   - indoor PM2.5
-   - outdoor PM2.5
-   - indoor minus outdoor PM2.5
-   - indoor/outdoor (I/O) ratio
-6. Daily summary statistics.
-7. Indoor–outdoor correlation and linear regression.
-8. Time-series visualisation using `openair`.
+Variables incorporated into the analysis are:
 
-## Project structure 
+- air temperature
+- atmospheric pressure
+- wind speed
+- wind direction
+- rainfall
 
-- `Greywolf_air_sampling_analysis.Rmd` — main analysis
+The 10 m wind measurements are used where observations are available at multiple heights.
+
+## Master analysis dataset
+
+The definitive analysis-ready R object is:
+
+`greywolf_master`
+
+This is the source dataset used for all subsequent analyses.
+
+It contains:
+
+- minute-level indoor GreyWolf PM₂.₅
+- minute-level outdoor GreyWolf PM₂.₅
+- indoor–outdoor PM₂.₅ difference
+- indoor/outdoor PM₂.₅ ratio
+- hourly Devonshire Green ambient PM₂.₅
+- hourly Athletic Stadium air temperature
+- hourly atmospheric pressure
+- hourly wind speed
+- hourly wind direction
+- hourly rainfall
+
+Hourly external observations are assigned to the corresponding GreyWolf minute observations 
+while retaining the original minute-level GreyWolf measurements.
+
+The processed master dataset is saved locally as:
+
+`data/processed/greywolf_master.rds`
+
+The processed dataset is excluded from Git because it can be reproduced from the original 
+data using the analysis workflow.
+
+## Analysis workflow
+
+The principal analysis is contained in:
+
+`Greywolf_air_sampling_analysis.Rmd`
+
+The current workflow includes:
+
+1. Import and identification of GreyWolf particulate-mass files.
+2. Extraction of indoor and outdoor PM₂.₅.
+3. Minute-level temporal matching of paired indoor and outdoor measurements.
+4. Sampling coverage checks.
+5. Daily indoor and outdoor descriptive statistics.
+6. Indoor/outdoor PM₂.₅ ratios and concentration differences.
+7. Minute-level indoor–outdoor correlations and regression.
+8. Openair time-series visualisation.
+9. Openair indoor–outdoor scatter plots.
+10. Aggregation to 15-minute mean concentrations using `openair::timeAverage()`.
+11. Comparison of indoor–outdoor relationships using 15-minute means.
+12. Integration of Devonshire Green ambient PM₂.₅.
+13. Integration of Athletic Stadium meteorological observations.
+
+## Project structure
+
+- `Greywolf_air_sampling_analysis.Rmd` — main reproducible analysis
 - `Greywolf_air_sampling.Rproj` — RStudio project
-- `data/raw/` — original GreyWolf data (excluded from Git)
-- `renv.lock` — reproducible R package environment
 - `README.md` — project documentation
-
-## Software
-
-Analysis is conducted in R and RStudio.
-
-Package dependencies are managed using `renv`.
-
-To restore the project package environment:
-
-`renv::restore()`
-
-`openair` is used where appropriate for air-pollution analysis and visualisation.
+- `renv.lock` — record of the R package environment
+- `data/raw/` — original monitoring and external data; excluded from Git
+- `data/processed/` — generated analysis-ready datasets; excluded from Git
 
 ## Reproducibility
 
-Raw data should remain unchanged.
+Analysis is performed in R/RStudio, using `openair` where appropriate for air-pollution 
+analysis and visualisation.
 
-All cleaning, matching, derivation and statistical analysis should be performed programmatically from the original files using the R Markdown workflow.
+Package dependencies are managed using `renv`.
 
-This README should be updated when additional schools, sampling campaigns, datasets or analytical procedures are added.
+The package environment can be restored using:
+
+`renv::restore()`
+
+Raw monitoring data should remain unchanged. Data cleaning, temporal matching, aggregation and 
+statistical analyses are performed programmatically within the R workflow.
+
+School identities must remain anonymised in all repository files, code, 
+documentation, figures and outputs.
