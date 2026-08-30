@@ -108,12 +108,13 @@ names(devonshire_green)
 
 ```
 
+
 ```{r join-minute-school-aurn}
 
 # Retains the original 1-minute GreyWolf indoor/outdoor PM2.5 measurements.
 # Each GreyWolf minute is assigned to its corresponding hour, then the hourly
-# Devonshire Green AURN PM2.5 and meteorological values are joined onto it.
-# This preserves minute-level school data while allowing later hourly aggregation.
+# Devonshire Green AURN PM2.5 is joined onto it.
+# This preserves minute-level school data while allowing later aggregation.
 
 school_minute_aurn <- paired_pm25 |>
   mutate(
@@ -124,6 +125,9 @@ school_minute_aurn <- paired_pm25 |>
       mutate(
         hour = floor_date(date, "hour")
       ) |>
+      rename(
+        aurn_pm25 = `pm2.5`
+      ) |>
       select(-date),
     by = "hour",
     suffix = c("_school", "_aurn")
@@ -133,6 +137,7 @@ school_minute_aurn <- paired_pm25 |>
 school_minute_aurn
 
 ```
+
 
 ```{r import-athletic-stadium-meteorology}
 
@@ -383,7 +388,7 @@ school1_pm25 <- greywolf_master |>
 
 timePlot(
   school1_pm25,
-  pollutant = c("indoor", "outdoor", "pm2.5"),
+  pollutant = c("indoor", "outdoor", "aurn_pm25"),
   group = TRUE,
   type = "sample_date",
   ncol = 1,
@@ -411,7 +416,7 @@ school2_pm25 <- greywolf_master |>
 
 timePlot(
   school2_pm25,
-  pollutant = c("indoor", "outdoor"),
+  pollutant = c("indoor", "outdoor", "aurn_pm25"),
   group = TRUE,
   type = "sample_date",
   ncol = 1,
